@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Valentine?</title>
+  <style>
+    :root{
+      --bg1:#fff1f5;
+      --bg2:#ffe7ef;
+      --card:#ffffffcc;
+      --text:#2b2b2b;
+      --pink:#ff4d7d;
+      --pink2:#ff7aa2;
+      --shadow: 0 18px 50px rgba(0,0,0,.12);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:
+        radial-gradient(1200px 700px at 20% 20%, var(--bg2), transparent 60%),
+        radial-gradient(1000px 700px at 80% 60%, #ffeef3, transparent 55%),
+        linear-gradient(180deg, var(--bg1), #fff);
+      font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color:var(--text);
+      padding: 22px;
+    }
+    .card{
+      width:min(720px, 100%);
+      background:var(--card);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 77, 125, .18);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px 22px 24px;
+      position:relative;
+      overflow:hidden;
+    }
+    .sparkle{
+      position:absolute;
+      inset:-80px -80px auto auto;
+      width:220px;height:220px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,77,125,.25), transparent 60%);
+      transform: rotate(18deg);
+      filter: blur(2px);
+      pointer-events:none;
+    }
+    .wrap{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items:center;
+    }
+    @media (max-width: 720px){
+      .wrap{grid-template-columns: 1fr}
+    }
+    h1{
+      margin: 0 0 8px;
+      font-size: clamp(24px, 3.2vw, 34px);
+      letter-spacing: .2px;
+    }
+    p{margin: 0 0 14px; line-height:1.45}
+    .sub{
+      color: rgba(43,43,43,.72);
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    .art{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 0;
+    }
+    .catBox{
+      width: min(320px, 100%);
+      aspect-ratio: 1 / 1;
+      border-radius: 28px;
+      background: radial-gradient(circle at 35% 30%, #fff, #ffe1ea 70%);
+      border: 1px solid rgba(255,77,125,.16);
+      box-shadow: 0 12px 30px rgba(255,77,125,.12);
+      display:grid;
+      place-items:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .cat{
+      font-size: 130px;
+      transform: translateY(6px);
+      filter: drop-shadow(0 10px 12px rgba(0,0,0,.12));
+      user-select:none;
+    }
+    .rose{
+      position:absolute;
+      bottom: 26px;
+      right: 52px;
+      font-size: 44px;
+      transform: rotate(-10deg);
+      user-select:none;
+    }
+    .heart{
+      position:absolute;
+      top: 18px;
+      left: 18px;
+      font-size: 20px;
+      opacity:.9;
+      animation: float 2.8s ease-in-out infinite;
+      user-select:none;
+    }
+    .heart:nth-child(2){top: 34px; left: 52px; animation-delay: .3s; opacity:.8}
+    .heart:nth-child(3){top: 18px; left: 86px; animation-delay: .6s; opacity:.7}
+    @keyframes float{
+      0%,100%{transform: translateY(0)}
+      50%{transform: translateY(-8px)}
+    }
+
+    .btnRow{
+      margin-top: 14px;
+      position:relative;
+      height: 92px;
+    }
+    .btn{
+      border:0;
+      padding: 14px 18px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor:pointer;
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+      box-shadow: 0 12px 24px rgba(0,0,0,.10);
+      user-select:none;
+    }
+    .btn:active{transform: scale(.98)}
+    .yes{
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      color:white;
+      min-width: 140px;
+    }
+    .yes:hover{filter: brightness(1.03)}
+    .no{
+      background: #fff;
+      color: #444;
+      border: 1px solid rgba(0,0,0,.12);
+      min-width: 140px;
+      position:absolute;
+      left: 180px;
+      top: 0;
+    }
+
+    .note{
+      margin-top: 10px;
+      font-size: 13px;
+      color: rgba(43,43,43,.68);
+    }
+    .tiny{
+      font-size: 12px;
+      color: rgba(43,43,43,.55);
+      margin-top: 6px;
+    }
+
+    /* Yay screen */
+    .yay{
+      display:none;
+      text-align:center;
+      padding: 18px 8px 8px;
+    }
+    .yay h2{
+      margin: 0 0 10px;
+      font-size: clamp(26px, 3.4vw, 38px);
+      color: var(--pink);
+    }
+    .yay p{
+      margin: 0 0 14px;
+      color: rgba(43,43,43,.72);
+    }
+    .gif{
+      width: min(420px, 100%);
+      border-radius: 18px;
+      border: 1px solid rgba(255,77,125,.18);
+      box-shadow: 0 16px 40px rgba(0,0,0,.12);
+    }
+    .footer{
+      margin-top: 12px;
+      font-size: 12px;
+      color: rgba(43,43,43,.45);
+    }
+  </style>
+</head>
+<body>
+  <div class="card" role="main" aria-live="polite">
+    <div class="sparkle"></div>
+
+    <div id="main" class="wrap">
+      <div>
+        <h1>Hey Khadeeja, will you be my Valentine? 💘</h1>
+        <p class="sub">I made this instead of sending a boring text. Please appreciate the nerd effort.</p>
+
+        <div class="btnRow" id="btnRow">
+          <button class="btn yes" id="yesBtn">Yes 💖</button>
+          <button class="btn no" id="noBtn">No 🙃</button>
+        </div>
+
+        <div class="note">I won’t take no for an answer 😼</div>
+        <div class="tiny">(Okay okay, after a few tries the “No” stops running. I’m goofy, not a villain.)</div>
+      </div>
+
+      <div class="art">
+        <div class="catBox" aria-hidden="true">
+          <div class="heart">💗</div>
+          <div class="heart">💗</div>
+          <div class="heart">💗</div>
+          <div class="cat">🐱</div>
+          <div class="rose">🌹</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="yay" class="yay">
+      <h2>YAAAY!! 🥳💞</h2>
+      <p>You just made my day. Now you’re stuck with me (in the cutest way).</p>
+      <img class="gif" alt="Celebration gif" src="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif">
+      <div class="footer">Now go text me what snacks you want for Valentine’s 😄</div>
+    </div>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const btnRow = document.getElementById("btnRow");
+    const main = document.getElementById("main");
+    const yay = document.getElementById("yay");
+
+    let dodges = 0;
+    const maxDodges = 8; // after this, it stops moving so "No" is possible
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function moveNoButton(){
+      const rowRect = btnRow.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const padding = 6;
+      const maxX = rowRect.width - btnRect.width - padding;
+      const maxY = rowRect.height - btnRect.height - padding;
+
+      // bias it to stay near the right side so it feels like it’s "escaping"
+      const x = clamp(Math.random() * maxX, 0, maxX);
+      const y = clamp(Math.random() * maxY, 0, maxY);
+
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+    }
+
+    // Desktop: dodge on hover
+    noBtn.addEventListener("mouseenter", () => {
+      if (dodges >= maxDodges) return;
+      dodges++;
+      moveNoButton();
+
+      // little escalation: make the Yes button slightly bigger as she keeps trying
+      const scale = 1 + Math.min(dodges * 0.03, 0.18);
+      yesBtn.style.transform = `scale(${scale})`;
+    });
+
+    // Mobile: dodge on touchstart (but still allow scrolling and not be annoying)
+    noBtn.addEventListener("touchstart", (e) => {
+      if (dodges >= maxDodges) return;
+      e.preventDefault();
+      dodges++;
+      moveNoButton();
+    }, { passive: false });
+
+    yesBtn.addEventListener("click", () => {
+      main.style.display = "none";
+      yay.style.display = "block";
+    });
+
+    // Initialize no button position (so it’s not perfectly aligned every time)
+    moveNoButton();
+  </script>
+</body>
+</html>
