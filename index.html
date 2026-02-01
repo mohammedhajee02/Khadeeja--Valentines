@@ -31,7 +31,7 @@
       padding: 22px;
     }
     .card{
-      width:min(720px, 100%);
+      width:min(760px, 100%);
       background:var(--card);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 77, 125, .18);
@@ -52,9 +52,9 @@
     }
     .wrap{
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.2fr .8fr;
       gap: 18px;
-      align-items:center;
+      align-items:start;
     }
     @media (max-width: 720px){
       .wrap{grid-template-columns: 1fr}
@@ -128,39 +128,45 @@
       border:0;
       padding: 14px 18px;
       border-radius: 999px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 15px;
       cursor:pointer;
       transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
       box-shadow: 0 12px 24px rgba(0,0,0,.10);
       user-select:none;
+      letter-spacing: .2px;
     }
     .btn:active{transform: scale(.98)}
     .yes{
       background: linear-gradient(135deg, var(--pink), var(--pink2));
       color:white;
-      min-width: 140px;
+      min-width: 150px;
     }
     .yes:hover{filter: brightness(1.03)}
     .no{
       background: #fff;
       color: #444;
       border: 1px solid rgba(0,0,0,.12);
-      min-width: 140px;
+      min-width: 150px;
       position:absolute;
-      left: 180px;
+      left: 190px;
       top: 0;
     }
 
     .note{
       margin-top: 10px;
       font-size: 13px;
-      color: rgba(43,43,43,.68);
+      color: rgba(43,43,43,.70);
     }
-    .tiny{
-      font-size: 12px;
-      color: rgba(43,43,43,.55);
-      margin-top: 6px;
+
+    /* Real cat photo (puppy eyes) under the note */
+    .puppyCat{
+      width: min(380px, 100%);
+      display:block;
+      margin-top: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,77,125,.18);
+      box-shadow: 0 16px 40px rgba(0,0,0,.12);
     }
 
     /* Yay screen */
@@ -179,15 +185,27 @@
       color: rgba(43,43,43,.72);
     }
     .gif{
-      width: min(420px, 100%);
+      width: min(460px, 100%);
       border-radius: 18px;
       border: 1px solid rgba(255,77,125,.18);
       box-shadow: 0 16px 40px rgba(0,0,0,.12);
+      background: #fff;
     }
     .footer{
       margin-top: 12px;
       font-size: 12px;
       color: rgba(43,43,43,.45);
+    }
+
+    /* Tiny unhinged micro-animation for the title */
+    .glitchy{
+      display:inline-block;
+      transform-origin: center;
+      animation: wobble .95s ease-in-out infinite;
+    }
+    @keyframes wobble{
+      0%,100%{transform: rotate(0deg) scale(1)}
+      50%{transform: rotate(-1.2deg) scale(1.01)}
     }
   </style>
 </head>
@@ -197,8 +215,8 @@
 
     <div id="main" class="wrap">
       <div>
-        <h1>Hey Khadeeja, will you be my Valentine? 💘</h1>
-        <p class="sub">I made this instead of sending a boring text. Please appreciate the nerd effort.</p>
+        <h1><span class="glitchy">Hey Khadeeja, will you be my Valentine?</span> 💘</h1>
+        <p class="sub">I made this instead of sending a boring text. My lawyer advised me to say: you’re welcome.</p>
 
         <div class="btnRow" id="btnRow">
           <button class="btn yes" id="yesBtn">Yes 💖</button>
@@ -206,11 +224,17 @@
         </div>
 
         <div class="note">I won’t take no for an answer 😼</div>
-        <div class="tiny">(Okay okay, after a few tries the “No” stops running. I’m goofy, not a villain.)</div>
+
+        <!-- Real cute cat doing puppy eyes -->
+        <img
+          class="puppyCat"
+          src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=900&q=80"
+          alt="Cute cat doing puppy eyes"
+        />
       </div>
 
-      <div class="art">
-        <div class="catBox" aria-hidden="true">
+      <div class="art" aria-hidden="true">
+        <div class="catBox">
           <div class="heart">💗</div>
           <div class="heart">💗</div>
           <div class="heart">💗</div>
@@ -222,9 +246,21 @@
 
     <div id="yay" class="yay">
       <h2>YAAAY!! 🥳💞</h2>
-      <p>You just made my day. Now you’re stuck with me (in the cutest way).</p>
-      <img class="gif" alt="Celebration gif" src="https://media.giphy.com/media/111ebonMs90YLu/giphy.gif">
-      <div class="footer">Now go text me what snacks you want for Valentine’s 😄</div>
+      <p>Okay slay. We’re locked in. Now I’m doing a victory lap around my room.</p>
+
+      <!-- Unhinged (but not creepy) celebration gif -->
+      <img
+        class="gif"
+        alt="Celebration gif"
+        src="https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif"
+        onerror="this.style.display='none'; document.getElementById('gifFallback').style.display='block';"
+      />
+
+      <div id="gifFallback" style="display:none; font-weight:800; color:#ff4d7d; font-size:18px; margin-top:10px;">
+        (Your browser blocked the gif. Imagine me doing the most unhinged happy dance anyway.)
+      </div>
+
+      <div class="footer">Now text me what snacks you want for Valentine’s 😄</div>
     </div>
   </div>
 
@@ -235,8 +271,7 @@
     const main = document.getElementById("main");
     const yay = document.getElementById("yay");
 
-    let dodges = 0;
-    const maxDodges = 8; // after this, it stops moving so "No" is possible
+    let dodges = 0; // it never stops moving
 
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
@@ -248,7 +283,7 @@
       const maxX = rowRect.width - btnRect.width - padding;
       const maxY = rowRect.height - btnRect.height - padding;
 
-      // bias it to stay near the right side so it feels like it’s "escaping"
+      // Keep it chaotic but inside the box
       const x = clamp(Math.random() * maxX, 0, maxX);
       const y = clamp(Math.random() * maxY, 0, maxY);
 
@@ -256,20 +291,24 @@
       noBtn.style.top = `${y}px`;
     }
 
-    // Desktop: dodge on hover
+    // Desktop: dodge on hover forever
     noBtn.addEventListener("mouseenter", () => {
-      if (dodges >= maxDodges) return;
       dodges++;
       moveNoButton();
 
-      // little escalation: make the Yes button slightly bigger as she keeps trying
-      const scale = 1 + Math.min(dodges * 0.03, 0.18);
+      // Slightly grow the Yes button as the chaos escalates
+      const scale = 1 + Math.min(dodges * 0.03, 0.22);
       yesBtn.style.transform = `scale(${scale})`;
+
+      // Occasionally shake the yes button a tiny bit for extra unhinged
+      if (dodges % 4 === 0) {
+        yesBtn.style.filter = "brightness(1.08)";
+        setTimeout(() => yesBtn.style.filter = "", 160);
+      }
     });
 
-    // Mobile: dodge on touchstart (but still allow scrolling and not be annoying)
+    // Mobile: dodge on touchstart forever
     noBtn.addEventListener("touchstart", (e) => {
-      if (dodges >= maxDodges) return;
       e.preventDefault();
       dodges++;
       moveNoButton();
