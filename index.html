@@ -11,15 +11,13 @@
       --bg2:#ffe7ef;
       --card:#ffffffcc;
       --text:#1f1f1f;
-      --muted:rgba(31,31,31,.70);
+      --muted:rgba(31,31,31,.72);
       --pink:#ff4d7d;
       --pink2:#ff7aa2;
       --shadow: 0 18px 50px rgba(0,0,0,.12);
       --radius: 22px;
     }
-
     *{box-sizing:border-box}
-
     body{
       margin:0;
       min-height:100vh;
@@ -30,7 +28,7 @@
         radial-gradient(1200px 700px at 20% 20%, var(--bg2), transparent 60%),
         radial-gradient(1000px 700px at 80% 60%, #ffeef3, transparent 55%),
         linear-gradient(180deg, var(--bg1), #fff);
-      font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
       padding:22px;
     }
@@ -65,13 +63,13 @@
     }
 
     .sub{
-      margin:0 0 18px;
+      margin:0 0 14px;
       color: var(--muted);
       font-size: 15px;
       line-height:1.45;
     }
 
-    /* Only photo on first page */
+    /* Only image on the first page */
     .heroImg{
       width:100%;
       border-radius: 20px;
@@ -79,8 +77,8 @@
       box-shadow: 0 18px 45px rgba(0,0,0,.15);
       display:block;
       object-fit: cover;
-      max-height: 440px;
-      margin: 14px 0 18px;
+      max-height: 460px;
+      margin: 12px 0 18px;
     }
 
     .btnRow{
@@ -101,7 +99,6 @@
       letter-spacing:.2px;
       transition: transform .12s ease, filter .12s ease;
     }
-
     .btn:active{ transform: scale(.98); }
 
     .yes{
@@ -127,7 +124,7 @@
       color: rgba(31,31,31,.72);
     }
 
-    /* YES screen */
+    /* Page 2 */
     .yay{
       display:none;
       text-align:center;
@@ -145,7 +142,7 @@
       margin: 0 0 16px;
       font-size: 16px;
       color: rgba(31,31,31,.75);
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .mediaBox{
@@ -158,7 +155,7 @@
       background: rgba(255,255,255,.65);
     }
 
-    .celebrateMedia{
+    .celebrate{
       width:100%;
       display:block;
       background:#000;
@@ -183,13 +180,11 @@
       <h1>Hey Khadeeja will you be my valentines?</h1>
       <p class="sub">Sorry for the long wait I am not a coder I never claimed to be a coder</p>
 
-      <!-- ONLY PHOTO ON FIRST PAGE -->
-      <!-- Best practice: upload your own image named cats.jpg into the repo -->
+      <!-- ONLY PHOTO: 2 cute cats cuddling (no upload required) -->
       <img
         class="heroImg"
-        src="cats.jpg"
+        src="https://placekitten.com/1200/750"
         alt="Two cute cats cuddling"
-        onerror="this.onerror=null; this.src='https://placekitten.com/1200/700';"
       />
 
       <div class="btnRow" id="btnRow">
@@ -205,31 +200,29 @@
       <h2>YAY</h2>
       <p>currently dwerking in joy</p>
 
-      <!-- Reliable media: host it in your repo so it NEVER gets blocked -->
+      <!-- “No upload” celebration:
+           We try a direct-embed source and if it fails, we swap to a second.
+           (No Giphy embeds; those often break.)
+      -->
       <div class="mediaBox">
         <video
-          id="celebrateVideo"
-          class="celebrateMedia"
+          id="celebrateVid"
+          class="celebrate"
           autoplay
           loop
           muted
           playsinline
           preload="auto"
         >
-          <source src="celebrate.mp4" type="video/mp4" />
+          <!-- Primary: unhinged dance vibe (non-explicit) -->
+          <source id="src1" src="https://media.tenor.com/videos/9d7bb7b6d3fd4cf1b6015ef9f2c3b5f4/mp4" type="video/mp4">
+          <!-- If src1 fails, we switch in JS -->
         </video>
 
-        <img
-          id="celebrateGif"
-          class="celebrateMedia"
-          src="celebrate.gif"
-          alt="Celebration"
-          style="display:none;"
-        />
-
         <div id="fallback" class="fallback">
-          Your celebration file isn’t uploaded yet.<br/>
-          Upload <b>celebrate.mp4</b> (recommended) or <b>celebrate.gif</b> to the repo (same folder as index.html).
+          The celebration clip got blocked 😭<br/>
+          (Your browser is being a hater.)<br/>
+          If you want 100% guaranteed playback, upload a local <b>celebrate.mp4</b>.
         </div>
       </div>
     </div>
@@ -243,9 +236,11 @@
     const yesBtn = document.getElementById("yesBtn");
     const btnRow = document.getElementById("btnRow");
 
-    const celebrateVideo = document.getElementById("celebrateVideo");
-    const celebrateGif = document.getElementById("celebrateGif");
+    const celebrateVid = document.getElementById("celebrateVid");
     const fallback = document.getElementById("fallback");
+
+    // Backup (more unhinged dancing, still non-explicit)
+    const backupMp4 = "https://media.tenor.com/videos/3a69b9a2df8f4ff2a2b9e35e7c6aef0e/mp4";
 
     let dodges = 0; // never stops
 
@@ -266,17 +261,13 @@
       noBtn.style.top = `${y}px`;
     }
 
-    // Dodge forever on desktop
     noBtn.addEventListener("mouseenter", () => {
       dodges++;
       moveNoButton();
-
-      // harmless chaos escalation
       const scale = 1 + Math.min(dodges * 0.03, 0.22);
       yesBtn.style.transform = `scale(${scale})`;
     });
 
-    // Dodge forever on mobile
     noBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
       dodges++;
@@ -287,27 +278,30 @@
       page1.style.display = "none";
       page2.style.display = "block";
 
-      // If mp4 fails, try gif. If both fail, show fallback.
-      celebrateVideo.onerror = () => {
-        celebrateVideo.style.display = "none";
-        celebrateGif.style.display = "block";
-      };
+      // If the video fails, swap to backup; if that fails, show fallback.
+      let triedBackup = false;
 
-      celebrateGif.onerror = () => {
-        celebrateGif.style.display = "none";
-        fallback.style.display = "block";
-      };
-
-      setTimeout(() => {
-        const videoOk = celebrateVideo && celebrateVideo.readyState >= 2;
-        if (!videoOk) {
-          celebrateVideo.style.display = "none";
-          celebrateGif.style.display = "block";
+      celebrateVid.addEventListener("error", () => {
+        if (!triedBackup) {
+          triedBackup = true;
+          celebrateVid.pause();
+          celebrateVid.innerHTML = "";
+          const src = document.createElement("source");
+          src.src = backupMp4;
+          src.type = "video/mp4";
+          celebrateVid.appendChild(src);
+          celebrateVid.load();
+          celebrateVid.play().catch(() => {});
+        } else {
+          celebrateVid.style.display = "none";
+          fallback.style.display = "block";
         }
-      }, 1200);
+      }, { once: true });
+
+      // In case autoplay is blocked:
+      celebrateVid.play().catch(() => {});
     });
 
-    // Start with "No" in a random place
     moveNoButton();
   </script>
 </body>
